@@ -114,16 +114,15 @@ with tf.Session() as sess:
 		for transitions in D
 			s, r, a, s_n = transitions
 
-			#Calculate error and train network
+			#Find best Q-value of the next state
 			Q_n = sess.run(network, feed_dict={x : s_n})
-			Q_target = r + gamma*max(sess.run(network, feed_dict={x : s_n})
+			Q_target = r + gamma*max(Q_n)
 					
+			#Find new Q-value in the trained network
 			Q = sess.run(network, feed_dict={x : s}[a] #Get new reward in the updated network
 			network.train(Q_target - Q)
 
 		del D[:]
-
-	sess.run(network, feed_dict={x : s_n})
 	
 
 #.............................Not used...................................#
