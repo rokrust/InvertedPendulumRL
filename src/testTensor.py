@@ -12,10 +12,10 @@ batch_size = 100
 display_step = 1
 
 # Network Parameters
-n_hidden_1 = 5 # 1st layer number of features
-n_hidden_2 = 3 # 2nd layer number of features
-n_input = 4 # MNIST data input (img shape: 28*28)
-n_classes = 2 # MNIST total classes (0-9 digits)
+n_hidden_1 = 5
+n_hidden_2 = 3
+n_input = 4
+n_classes = 2
 
 # tf Graph input
 x = tf.placeholder("float", [None, n_input])
@@ -59,7 +59,7 @@ biases = {
 network = multilayer_perceptron(x, weights, biases)
 
 # Define loss and optimizer
-cost = tf.reduce_mean(tf.squared_difference(Q_target, Q_actual))#tf.reduce_mean(tf.nn.softmax_cross_entropy_with_logits(logits=pred, labels=y))
+cost = tf.reduce_mean(tf.squared_difference(labels=y))#tf.reduce_mean(tf.nn.softmax_cross_entropy_with_logits(logits=pred, labels=y))
 optimizer = tf.train.AdamOptimizer(learning_rate=learning_rate).minimize(cost)
 
 # Initializing the variables
