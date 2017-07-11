@@ -114,11 +114,14 @@ with tf.Session() as sess:
 
 			#Find best Q-value of the next state
 			Q_n = sess.run(network, feed_dict={x : s_n})
-			Q_target = r + gamma*max(Q_n)
+			Q_opt = r + gamma*max(Q_n)
 			
-			#Find new Q-value in the trained network
-			Q_actual = sess.run(network, feed_dict={x : s})[a] #Get new reward in the updated network
-			#network.train(Q_target - Q_actual)
+			#Find Q_target values. 
+			#The non-optimal action is set to have an error of zero
+			Q_target = sess.run(network, feed_dict={x : s}) #Get new reward in the updated network
+			Q_target[a] = Q_opt
+			
+			#Train the network
 			sess.run(optimizer, feed_dict={x : s, y : Q_target}) #Hopefully this is correct
 
 		del D[:]
