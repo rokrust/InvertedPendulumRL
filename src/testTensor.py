@@ -116,11 +116,12 @@ with tf.Session() as sess:
                 reward += current_reward
 
                 if done:
-                    D.append((current_state, reward, action, next_state))
+                    D.append((current_state, reward, action, []))
                     if PRINT_FLAG:
                         print("\t\tREWARD: ", reward)
                 else:
-                    D.append((current_state, Q[action], action, next_state))
+                    #D.append((current_state, Q[action], action, next_state))
+                    D.append((current_state, 0.0, action, next_state))
 
         if epsilon > 0.1:
             epsilon *= 0.95
@@ -130,15 +131,20 @@ with tf.Session() as sess:
             s, r, a, s_n = transitions
 
             # Find best Q-value of the next state
-            [Q_n] = sess.run(network, feed_dict={x: s_n})
+            if not a:   # If terminal state
+                [Q_target] = sess.run(network, feed_dict={x: s})
+                Q_target[a] = r
+                Q_target = np.reshape(Q_target, [-1, 2])
+            else:
+                [Q_n] = sess.run(network, feed_dict={x: s_n})
 
-            # Get new reward in the updated network
-            [Q_target] = sess.run(network, feed_dict={x: s})
+                # Get new reward in the updated network
+                [Q_target] = sess.run(network, feed_dict={x: s})
 
-            # Find Q_target values.
-            # The non-optimal action is set to have an error of zero
-            Q_target[a] = r + gamma * max(Q_n)
-            Q_target = np.reshape(Q_target, [-1, 2])
+                # Find Q_target values.
+                # The non-optimal action is set to have an error of zero
+                Q_target[a] = r + gamma * max(Q_n)
+                Q_target = np.reshape(Q_target, [-1, 2])
 
             # Train the network
             sess.run(optimizer, feed_dict={x: s, y: Q_target})
