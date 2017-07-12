@@ -7,6 +7,8 @@ for i_episode in range(20):
         print(observation)
         action = env.action_space.sample()
         a = env.action_space
+        print("Action: ", action)
+
         observation, reward, done, info = env.step(action)
         print("Reward: {}".format(reward))
         if done:
