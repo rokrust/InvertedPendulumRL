@@ -5,14 +5,14 @@ import gym
 env = gym.make('CartPole-v0')
 
 # Parameters
-learning_rate = 0.001
+learning_rate = 0.005
 training_epochs = 15
 batch_size = 100
 display_step = 1
 
 # Network Parameters
 n_hidden_1 = 10
-n_hidden_2 = 10
+n_hidden_2 = 15
 n_input = 4
 n_classes = 2
 
@@ -35,13 +35,14 @@ def multilayer_perceptron(x, weights, biases):
     with tf.name_scope('OutputLayer'):
         # Output layer with linear activation
         out_layer = tf.matmul(layer_2, weights['out']) + biases['out']
+
     return out_layer
 
 # Store layers weight & bias
 weights = {
-    'h1': tf.Variable(tf.random_normal([n_input, n_hidden_1]), name='WeightsLayer1'),
-    'h2': tf.Variable(tf.random_normal([n_hidden_1, n_hidden_2]), name='WeightsLayer2'),
-    'out': tf.Variable(tf.random_normal([n_hidden_2, n_classes]), name='WeightsOutput')
+    'h1': tf.Variable(tf.random_normal([n_input, n_hidden_1], stddev=0.05), name='WeightsLayer1'),
+    'h2': tf.Variable(tf.random_normal([n_hidden_1, n_hidden_2], stddev=0.05), name='WeightsLayer2'),
+    'out': tf.Variable(tf.random_normal([n_hidden_2, n_classes], stddev=0.05), name='WeightsOutput')
 }
 
 biases = {
@@ -55,7 +56,7 @@ network = multilayer_perceptron(x, weights, biases)
 
 # Define loss and optimizer
 cost = tf.reduce_mean(tf.squared_difference(network, y, name='SquaredDifference'), name='CostFunction')
-optimizer = tf.train.AdamOptimizer(learning_rate=learning_rate, name='AdamOptimizer').minimize(cost)
+optimizer = tf.train.AdamOptimizer(learning_rate=learning_rate, beta2=0.95, name='AdamOptimizer').minimize(cost)
 
 current_state = tf.Variable(tf.zeros([1, 4]), dtype=tf.float32, name='CurrentState')
 next_state = tf.Variable(tf.zeros([1, 4]), dtype=tf.float32, name='NextState')  # init model
@@ -69,11 +70,10 @@ with tf.Session() as sess:
     writer = tf.summary.FileWriter("output", sess.graph)
 
     n_runs = 1000
-    n_batch = 10
+    n_batch = 1
     # hyper parameters
     epsilon = 1
-    learning_rate = 0.001
-    gamma = 0.01
+    gamma = 0.7
 
     # state variables
 
@@ -88,16 +88,19 @@ with tf.Session() as sess:
             next_state = np.reshape(env.reset(), [-1, 4])
             reward = 0  # Final reward
             done = 0  # Termination condition
+
             while not done:
                 if PRINT_FLAG:
                     env.render()
                 current_state = next_state
                 [Q] = sess.run(network, feed_dict={x: current_state})
+
                 if PRINT_FLAG:
                     print("\tOUTPUT: ", Q)
+
                 if random.random() < epsilon:
                     action = np.random.randint(2)
-
+                #Choose action with biggest q-value
                 elif Q[0] > Q[1]:
                     action = 0
 
@@ -114,9 +117,8 @@ with tf.Session() as sess:
 
                 if done:
                     D.append((current_state, reward, action, next_state))
-                    if PRINT_FLAG():
+                    if PRINT_FLAG:
                         print("\t\tREWARD: ", reward)
-                # Save transitions
                 else:
                     D.append((current_state, Q[action], action, next_state))
 
@@ -129,18 +131,20 @@ with tf.Session() as sess:
 
             # Find best Q-value of the next state
             [Q_n] = sess.run(network, feed_dict={x: s_n})
-            Q_opt = r + gamma * max(Q_n)
+
+            # Get new reward in the updated network
+            [Q_target] = sess.run(network, feed_dict={x: s})
 
             # Find Q_target values.
             # The non-optimal action is set to have an error of zero
-            [Q_target] = sess.run(network, feed_dict={x: s})  # Get new reward in the updated network
-            Q_target[a] = Q_opt
+            Q_target[a] = r + gamma * max(Q_n)
             Q_target = np.reshape(Q_target, [-1, 2])
-            # Train the network
-            sess.run(optimizer, feed_dict={x: s, y: Q_target})  # Hopefully this is correct
 
+            # Train the network
+            sess.run(optimizer, feed_dict={x: s, y: Q_target})
         del D[:]
     writer.close()
+
 # .............................Not used...................................#
 """
     # Training cycle
