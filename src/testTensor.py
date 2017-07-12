@@ -7,12 +7,12 @@ env = gym.make('CartPole-v0')
 # Parameters
 learning_rate = 0.001
 training_epochs = 15
-batch_size = 100
+batch_size = 500
 display_step = 1
 
 # Network Parameters
-n_hidden_1 = 240
-n_hidden_2 = 240
+n_hidden_1 = 120
+n_hidden_2 = 120
 n_input = 4
 n_classes = 2
 
@@ -27,13 +27,13 @@ def multilayer_perceptron(x, weights, biases):
     with tf.name_scope('FirstLayer'):
         layer_1 = tf.add(tf.matmul(x, weights['h1']), biases['b1'])
         layer_1 = tf.nn.relu(layer_1)
-        layer_1 = tf.nn.dropout(layer_1, keep_prob=0.5)
+        # layer_1 = tf.nn.dropout(layer_1, keep_prob=0.8)
 
     with tf.name_scope('SecondLayer'):
         # Hidden layer with RELU activation
         layer_2 = tf.matmul(layer_1, weights['h2']) + biases['b2']
         layer_2 = tf.nn.relu(layer_2)
-        layer_2 = tf.nn.dropout(layer_2, keep_prob=0.5)
+        # layer_2 = tf.nn.dropout(layer_2, keep_prob=0.8)
 
     with tf.name_scope('OutputLayer'):
         # Output layer with linear activation
@@ -88,6 +88,7 @@ with tf.Session() as sess:
             PRINT_FLAG = True;
         else:
             PRINT_FLAG = False
+
         D = []
         for batch in range(n_batch):
             if epoch%100 == 0:
@@ -97,26 +98,22 @@ with tf.Session() as sess:
             done = 0  # Termination condition
 
             while not done:
-                if PRINT_FLAG:
-                    env.render()
+
                 current_state = next_state
                 [Q] = sess.run(network, feed_dict={x: current_state})
 
-                if PRINT_FLAG:
-                    print("\tOUTPUT: ", Q)
-
+                #Take a random action with probability epsilon
                 if random.random() < epsilon:
                     action = np.random.randint(2)
-                #Choose action with biggest q-value
+
+                #Otherwise, choose action with largest q-value
                 elif Q[0] > Q[1]:
                     action = 0
 
                 else:
                     action = 1
 
-                # Step through model
-                if PRINT_FLAG:
-                    print("Action: ", action)
+                # Step through model and update state
                 next_state, current_reward, done, info = env.step(action)
                 next_state = np.reshape(next_state, [-1, 4])
 
@@ -125,11 +122,15 @@ with tf.Session() as sess:
                 if done:
                     D.append((current_state, reward, action, []))
                     if PRINT_FLAG:
-                        print("\t\tREWARD: ", reward)
+                        print("Reward: ", reward)
+                    
                 else:
-                    #D.append((current_state, Q[action], action, next_state))
                     D.append((current_state, 0.0, action, next_state))
 
+                if PRINT_FLAG:
+                    env.render()
+                    print("Q: ", Q)
+                    print("Action: ", action)
         if epsilon > 0.1:
             epsilon *= 0.99
 

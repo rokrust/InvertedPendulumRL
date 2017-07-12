@@ -2,6 +2,36 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="6a89f2ff-a9f9-4803-8aa9-9b178550fc90" name="Default" comment="">
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/output/events.out.tfevents.1499867801.Bartleif" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/output/events.out.tfevents.1499867816.Bartleif" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/output/events.out.tfevents.1499868120.Bartleif" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/output/events.out.tfevents.1499868144.Bartleif" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/output/events.out.tfevents.1499868200.Bartleif" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/output/events.out.tfevents.1499868236.Bartleif" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/output/events.out.tfevents.1499868268.Bartleif" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/output/events.out.tfevents.1499868860.Bartleif" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/output/events.out.tfevents.1499868944.Bartleif" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/output/events.out.tfevents.1499869018.Bartleif" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/output/events.out.tfevents.1499869672.Bartleif" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/output/events.out.tfevents.1499869692.Bartleif" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/output/events.out.tfevents.1499869833.Bartleif" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/output/events.out.tfevents.1499869991.Bartleif" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/output/events.out.tfevents.1499870379.Bartleif" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/output/events.out.tfevents.1499870391.Bartleif" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/output/events.out.tfevents.1499871122.Bartleif" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/output/events.out.tfevents.1499871238.Bartleif" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/output/events.out.tfevents.1499872201.Bartleif" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/output/events.out.tfevents.1499872298.Bartleif" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/output/events.out.tfevents.1499872523.Bartleif" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/output/events.out.tfevents.1499872568.Bartleif" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/output/events.out.tfevents.1499872984.Bartleif" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/output/events.out.tfevents.1499873039.Bartleif" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/output/events.out.tfevents.1499873188.Bartleif" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/output/events.out.tfevents.1499873380.Bartleif" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/output/events.out.tfevents.1499873555.Bartleif" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/output/events.out.tfevents.1499873612.Bartleif" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/output/events.out.tfevents.1499873865.susa" afterPath="$PROJECT_DIR$/src/output/events.out.tfevents.1499873865.susa" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/testTensor.py" afterPath="$PROJECT_DIR$/src/testTensor.py" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -13,20 +43,11 @@
   </component>
   <component name="CoverageDataManager">
     <SUITE FILE_PATH="coverage/invertedPendulumRL$testEnv.coverage" NAME="testEnv Coverage Results" MODIFIED="1499846536167" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/src" />
-    <SUITE FILE_PATH="coverage/invertedPendulumRL$testTensor.coverage" NAME="testTensor Coverage Results" MODIFIED="1499873863595" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/src" />
+    <SUITE FILE_PATH="coverage/invertedPendulumRL$testTensor.coverage" NAME="testTensor Coverage Results" MODIFIED="1499875233328" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/src" />
   </component>
   <component name="ExecutionTargetManager" SELECTED_TARGET="default_target" />
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file leaf-file-name="Regression.ipynb" pinned="false" current-in-tab="false">
-        <entry file="file://$USER_HOME$/Downloads/TensorflowExercise/assignments/exercise 2/Regression.ipynb">
-          <provider selected="true" editor-type-id="ipnb-editor">
-            <state>
-              <selected id="-1" />
-            </state>
-          </provider>
-        </entry>
-      </file>
       <file leaf-file-name="testEnv.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/testEnv.py">
           <provider selected="true" editor-type-id="text-editor">
@@ -40,8 +61,8 @@
       <file leaf-file-name="testTensor.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/testTensor.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-80">
-              <caret line="14" column="16" lean-forward="false" selection-start-line="14" selection-start-column="16" selection-end-line="14" selection-end-column="16" />
+            <state relative-caret-position="429">
+              <caret line="163" column="69" lean-forward="false" selection-start-line="163" selection-start-column="69" selection-end-line="163" selection-end-column="69" />
               <folding>
                 <element signature="e#0#23#0" expanded="true" />
               </folding>
@@ -398,7 +419,7 @@
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="true" content_ui="tabs" />
       <window_info id="Database" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
-      <window_info id="Run" active="true" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.44895718" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.26783755" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Python Console" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
@@ -431,7 +452,7 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/src/testTensor.py</url>
-          <line>182</line>
+          <line>183</line>
           <option name="timeStamp" value="6" />
         </line-breakpoint>
       </breakpoints>
@@ -642,10 +663,18 @@
         </state>
       </provider>
     </entry>
+    <entry file="file:///usr/lib/python3.6/codecs.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="312">
+          <caret line="313" column="66" lean-forward="false" selection-start-line="313" selection-start-column="66" selection-end-line="313" selection-end-column="66" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/src/testTensor.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-80">
-          <caret line="14" column="16" lean-forward="false" selection-start-line="14" selection-start-column="16" selection-end-line="14" selection-end-column="16" />
+        <state relative-caret-position="429">
+          <caret line="163" column="69" lean-forward="false" selection-start-line="163" selection-start-column="69" selection-end-line="163" selection-end-column="69" />
           <folding>
             <element signature="e#0#23#0" expanded="true" />
           </folding>
