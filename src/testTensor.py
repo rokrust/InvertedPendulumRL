@@ -5,13 +5,13 @@ import gym
 env = gym.make('CartPole-v0')
 
 # Parameters
-learning_rate = 0.005
+learning_rate = 0.1
 training_epochs = 15
-batch_size = 100
+batch_size = 500
 display_step = 1
 
 # Network Parameters
-n_hidden_1 = 10
+n_hidden_1 = 20
 n_hidden_2 = 15
 n_input = 4
 n_classes = 2
@@ -69,47 +69,44 @@ with tf.Session() as sess:
     sess.run(init)
     writer = tf.summary.FileWriter("output", sess.graph)
 
-    n_runs = 1000
+    n_runs = 20000
     n_batch = 1
     # hyper parameters
     epsilon = 1
-    gamma = 0.7
+    gamma = 0.3
 
     # state variables
 
     for epoch in range(n_runs):
-        if epoch > 300:
+        if epoch > 500:
             PRINT_FLAG = True;
         else:
             PRINT_FLAG = False
+
         D = []
         for batch in range(n_batch):
-            print("Epoch ", epoch)
+
             next_state = np.reshape(env.reset(), [-1, 4])
             reward = 0  # Final reward
             done = 0  # Termination condition
 
             while not done:
-                if PRINT_FLAG:
-                    env.render()
+
                 current_state = next_state
                 [Q] = sess.run(network, feed_dict={x: current_state})
 
-                if PRINT_FLAG:
-                    print("\tOUTPUT: ", Q)
-
+				#Take a random action with probability epsilon
                 if random.random() < epsilon:
                     action = np.random.randint(2)
-                #Choose action with biggest q-value
-                elif Q[0] > Q[1]:
-                    action = 0
 
-                else:
+                #Otherwise, choose action with largest q-value
+                elif Q[0] > Q[1]:
                     action = 1
 
-                # Step through model
-                if PRINT_FLAG:
-                    print("Action: ", action)
+                else:
+                    action = 0
+
+                # Step through model and update state
                 next_state, current_reward, done, info = env.step(action)
                 next_state = np.reshape(next_state, [-1, 4])
 
@@ -117,14 +114,19 @@ with tf.Session() as sess:
 
                 if done:
                     D.append((current_state, reward, action, []))
-                    if PRINT_FLAG:
-                        print("\t\tREWARD: ", reward)
+                    
                 else:
-                    #D.append((current_state, Q[action], action, next_state))
                     D.append((current_state, 0.0, action, next_state))
 
-        if epsilon > 0.1:
-            epsilon *= 0.95
+                if not epoch % 100:
+                    print("Epoch:", epoch)
+
+                if PRINT_FLAG:
+                    env.render()
+                    print("\tOUTPUT: ", Q)
+                    print("Action: ", action)
+
+        epsilon = max(epsilon*0.95, 0.1)
 
         random.shuffle(D)  # Pick a random transition from D
         for transitions in D:
@@ -136,6 +138,7 @@ with tf.Session() as sess:
                 [Q_target] = sess.run(network, feed_dict={x: s})
                 Q_target[a] = r
                 Q_target = np.reshape(Q_target, [-1, 2])
+
             else:
                 [Q_n] = sess.run(network, feed_dict={x: s_n})
 
@@ -144,7 +147,7 @@ with tf.Session() as sess:
 
                 # Find Q_target values.
                 # The non-optimal action is set to have an error of zero
-                Q_target[a] = r + gamma * max(Q_n)
+                Q_target[a] = gamma * max(Q_n)
                 Q_target = np.reshape(Q_target, [-1, 2])
 
             # Train the network
