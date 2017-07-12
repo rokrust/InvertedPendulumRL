@@ -5,20 +5,21 @@ import gym
 env = gym.make('CartPole-v0')
 
 # Parameters
-learning_rate = 0.005
+learning_rate = 0.001
 training_epochs = 15
 batch_size = 100
 display_step = 1
 
 # Network Parameters
-n_hidden_1 = 10
-n_hidden_2 = 15
+n_hidden_1 = 240
+n_hidden_2 = 240
 n_input = 4
 n_classes = 2
 
 # tf Graph input
-x = tf.placeholder("float", [None, n_input], name='InputState')
-y = tf.placeholder("float", [None, n_classes], name='Labels')
+x = tf.placeholder("float32", [None, n_input], name='InputState')
+y_0 = tf.placeholder("float32", [None, 1], name='Labels_0')
+
 
 # Create model
 def multilayer_perceptron(x, weights, biases):
@@ -26,11 +27,13 @@ def multilayer_perceptron(x, weights, biases):
     with tf.name_scope('FirstLayer'):
         layer_1 = tf.add(tf.matmul(x, weights['h1']), biases['b1'])
         layer_1 = tf.nn.relu(layer_1)
+        layer_1 = tf.nn.dropout(layer_1, keep_prob=0.5)
 
     with tf.name_scope('SecondLayer'):
         # Hidden layer with RELU activation
         layer_2 = tf.matmul(layer_1, weights['h2']) + biases['b2']
         layer_2 = tf.nn.relu(layer_2)
+        layer_2 = tf.nn.dropout(layer_2, keep_prob=0.5)
 
     with tf.name_scope('OutputLayer'):
         # Output layer with linear activation
@@ -55,8 +58,11 @@ biases = {
 network = multilayer_perceptron(x, weights, biases)
 
 # Define loss and optimizer
-cost = tf.reduce_mean(tf.squared_difference(network, y, name='SquaredDifference'), name='CostFunction')
-optimizer = tf.train.AdamOptimizer(learning_rate=learning_rate, beta2=0.95, name='AdamOptimizer').minimize(cost)
+cost_0 = tf.reduce_mean(tf.squared_difference(network[0,1], [y_0], name='SquaredDifference'), name='CostFunction')
+optimizer_0 = tf.train.RMSPropOptimizer(learning_rate=learning_rate, decay=0.95, name='Optimizer').minimize(cost_0)
+
+cost_1 = tf.reduce_mean(tf.squared_difference(network[0,0] , [y_0], name='SquaredDifference'), name='CostFunction')
+optimizer_1 = tf.train.RMSPropOptimizer(learning_rate=learning_rate, decay=0.95, name='Optimizer').minimize(cost_1)
 
 current_state = tf.Variable(tf.zeros([1, 4]), dtype=tf.float32, name='CurrentState')
 next_state = tf.Variable(tf.zeros([1, 4]), dtype=tf.float32, name='NextState')  # init model
@@ -69,22 +75,23 @@ with tf.Session() as sess:
     sess.run(init)
     writer = tf.summary.FileWriter("output", sess.graph)
 
-    n_runs = 1000
+    n_runs = 11000
     n_batch = 1
     # hyper parameters
     epsilon = 1
-    gamma = 0.7
+    gamma = 0.5
 
     # state variables
 
     for epoch in range(n_runs):
-        if epoch > 300:
+        if epoch > 3000:
             PRINT_FLAG = True;
         else:
             PRINT_FLAG = False
         D = []
         for batch in range(n_batch):
-            print("Epoch ", epoch)
+            if epoch%100 == 0:
+                print("Epoch ", epoch)
             next_state = np.reshape(env.reset(), [-1, 4])
             reward = 0  # Final reward
             done = 0  # Termination condition
@@ -124,31 +131,38 @@ with tf.Session() as sess:
                     D.append((current_state, 0.0, action, next_state))
 
         if epsilon > 0.1:
-            epsilon *= 0.95
+            epsilon *= 0.99
 
         random.shuffle(D)  # Pick a random transition from D
         for transitions in D:
             s, r, a, s_n = transitions
-
+            Q_target = [0]
             # Find best Q-value of the next state
             if len(s_n) == 0:   # If terminal state
 
-                [Q_target] = sess.run(network, feed_dict={x: s})
-                Q_target[a] = r
-                Q_target = np.reshape(Q_target, [-1, 2])
+                #[Q_target] = sess.run(network, feed_dict={x: s})
+                Q_target[0] = r
+                #Q_target = np.reshape(Q_target, [-1, 2])
+                Q_target = np.reshape(Q_target, [-1, 1])
             else:
                 [Q_n] = sess.run(network, feed_dict={x: s_n})
 
                 # Get new reward in the updated network
-                [Q_target] = sess.run(network, feed_dict={x: s})
+                #[Q_target] = sess.run(network, feed_dict={x: s})
 
                 # Find Q_target values.
                 # The non-optimal action is set to have an error of zero
-                Q_target[a] = r + gamma * max(Q_n)
-                Q_target = np.reshape(Q_target, [-1, 2])
+                Q_target[0] = r + gamma * max(Q_n)
+                #Q_target = np.reshape(Q_target, [-1, 2])
+                Q_target = np.reshape(Q_target, [-1, 1])
 
             # Train the network
-            sess.run(optimizer, feed_dict={x: s, y: Q_target})
+            if a == 0:
+                sess.run(optimizer_0, feed_dict={x: s, y_0: Q_target})
+            else:
+                sess.run(optimizer_1, feed_dict={x: s, y_0: Q_target})
+
+
         del D[:]
     writer.close()
 
