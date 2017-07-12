@@ -17,43 +17,48 @@ n_input = 4
 n_classes = 2
 
 # tf Graph input
-x = tf.placeholder("float", [None, n_input])
-y = tf.placeholder("float", [None, n_classes])
-pred = tf.placeholder("float", [None, n_classes])
+x = tf.placeholder("float", [None, n_input], name='InputState')
+y = tf.placeholder("float", [None, n_classes], name='Labels')
 
 # Create model
 def multilayer_perceptron(x, weights, biases):
     # Hidden layer with RELU activation
-    layer_1 = tf.add(tf.matmul(x, weights['h1']), biases['b1'])
-    layer_1 = tf.nn.relu(layer_1)
+    with tf.name_scope('FirstLayer'):
+        layer_1 = tf.add(tf.matmul(x, weights['h1']), biases['b1'])
+        layer_1 = tf.nn.relu(layer_1)
 
-    # Hidden layer with RELU activation
-    layer_2 = tf.matmul(layer_1, weights['h2']) + biases['b2']
-    layer_2 = tf.nn.relu(layer_2)
+    with tf.name_scope('SecondLayer'):
+        # Hidden layer with RELU activation
+        layer_2 = tf.matmul(layer_1, weights['h2']) + biases['b2']
+        layer_2 = tf.nn.relu(layer_2)
 
-    # Output layer with linear activation
-    out_layer = tf.matmul(layer_2, weights['out']) + biases['out']
+    with tf.name_scope('OutputLayer'):
+        # Output layer with linear activation
+        out_layer = tf.matmul(layer_2, weights['out']) + biases['out']
     return out_layer
 
 # Store layers weight & bias
 weights = {
-    'h1': tf.Variable(tf.random_normal([n_input, n_hidden_1])),
-    'h2': tf.Variable(tf.random_normal([n_hidden_1, n_hidden_2])),
-    'out': tf.Variable(tf.random_normal([n_hidden_2, n_classes]))
+    'h1': tf.Variable(tf.random_normal([n_input, n_hidden_1]), name='WeightsLayer1'),
+    'h2': tf.Variable(tf.random_normal([n_hidden_1, n_hidden_2]), name='WeightsLayer2'),
+    'out': tf.Variable(tf.random_normal([n_hidden_2, n_classes]), name='WeightsOutput')
 }
 
 biases = {
-    'b1': tf.Variable(tf.random_normal([n_hidden_1])),
-    'b2': tf.Variable(tf.random_normal([n_hidden_2])),
-    'out': tf.Variable(tf.random_normal([n_classes]))
+    'b1': tf.Variable(tf.random_normal([n_hidden_1]), name='BiasLayer1'),
+    'b2': tf.Variable(tf.random_normal([n_hidden_2]), name='BiasLayer2'),
+    'out': tf.Variable(tf.random_normal([n_classes]), name='BiasOutput')
 }
 
 # Construct model
 network = multilayer_perceptron(x, weights, biases)
 
 # Define loss and optimizer
-cost = tf.reduce_mean(tf.nn.softmax_cross_entropy_with_logits(logits=network, labels=y))
-optimizer = tf.train.AdamOptimizer(learning_rate=learning_rate).minimize(cost)
+cost = tf.reduce_mean(tf.squared_difference(network, y, name='SquaredDifference'), name='CostFunction')
+optimizer = tf.train.AdamOptimizer(learning_rate=learning_rate, name='AdamOptimizer').minimize(cost)
+
+current_state = tf.Variable(tf.zeros([1, 4]), dtype=tf.float32, name='CurrentState')
+next_state = tf.Variable(tf.zeros([1, 4]), dtype=tf.float32, name='NextState')  # init model
 
 # Initializing the variables
 init = tf.global_variables_initializer()
@@ -61,6 +66,7 @@ init = tf.global_variables_initializer()
 # Launch the graph
 with tf.Session() as sess:
     sess.run(init)
+    writer = tf.summary.FileWriter("output", sess.graph)
 
     n_runs = 1000
     n_batch = 10
@@ -70,21 +76,25 @@ with tf.Session() as sess:
     gamma = 0.01
 
     # state variables
-    current_state = None
 
     for epoch in range(n_runs):
+        if epoch > 300:
+            PRINT_FLAG = True;
+        else:
+            PRINT_FLAG = False
+        D = []
         for batch in range(n_batch):
             print("Epoch ", epoch)
-            D = []
-            next_state = env.reset()  # init model
-            next_state = np.reshape(next_state, [-1, 4])
+            next_state = np.reshape(env.reset(), [-1, 4])
             reward = 0  # Final reward
             done = 0  # Termination condition
             while not done:
-                env.render()
+                if PRINT_FLAG:
+                    env.render()
                 current_state = next_state
                 [Q] = sess.run(network, feed_dict={x: current_state})
-                print("\tOUTPUT: ", Q)
+                if PRINT_FLAG:
+                    print("\tOUTPUT: ", Q)
                 if random.random() < epsilon:
                     action = np.random.randint(2)
 
@@ -95,15 +105,17 @@ with tf.Session() as sess:
                     action = 1
 
                 # Step through model
-                print("Action: ", action)
+                if PRINT_FLAG:
+                    print("Action: ", action)
                 next_state, current_reward, done, info = env.step(action)
                 next_state = np.reshape(next_state, [-1, 4])
 
                 reward += current_reward
 
                 if done:
-                    D.append((current_state, reward*100, action, next_state))
-                    print("\t\tREWARD: ", reward)
+                    D.append((current_state, reward, action, next_state))
+                    if PRINT_FLAG():
+                        print("\t\tREWARD: ", reward)
                 # Save transitions
                 else:
                     D.append((current_state, Q[action], action, next_state))
@@ -128,6 +140,7 @@ with tf.Session() as sess:
             sess.run(optimizer, feed_dict={x: s, y: Q_target})  # Hopefully this is correct
 
         del D[:]
+    writer.close()
 # .............................Not used...................................#
 """
     # Training cycle
