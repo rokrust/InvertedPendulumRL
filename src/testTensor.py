@@ -131,7 +131,8 @@ with tf.Session() as sess:
             s, r, a, s_n = transitions
 
             # Find best Q-value of the next state
-            if not a:   # If terminal state
+            if len(s_n) == 0:   # If terminal state
+
                 [Q_target] = sess.run(network, feed_dict={x: s})
                 Q_target[a] = r
                 Q_target = np.reshape(Q_target, [-1, 2])
